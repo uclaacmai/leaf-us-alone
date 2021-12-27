@@ -3,21 +3,21 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.utils.tensorboard
 
+"""
+Trains and evaluates a model.
+
+Args:
+    train_dataset:   PyTorch dataset containing training data.
+    val_dataset:     PyTorch dataset containing validation data.
+    model:           PyTorch model to be trained.
+    hyperparameters: Dictionary containing hyperparameters.
+    n_eval:          Interval at which we evaluate our model.
+    summary_path:    Path where Tensorboard summaries are located.
+"""
 
 def starting_train(
     train_dataset, val_dataset, model, hyperparameters, n_eval, summary_path
 ):
-    """
-    Trains and evaluates a model.
-
-    Args:
-        train_dataset:   PyTorch dataset containing training data.
-        val_dataset:     PyTorch dataset containing validation data.
-        model:           PyTorch model to be trained.
-        hyperparameters: Dictionary containing hyperparameters.
-        n_eval:          Interval at which we evaluate our model.
-        summary_path:    Path where Tensorboard summaries are located.
-    """
 
     # Get keyword arguments
     batch_size, epochs = hyperparameters["batch_size"], hyperparameters["epochs"]
@@ -35,8 +35,9 @@ def starting_train(
     loss_fn = nn.CrossEntropyLoss()
 
     # Initialize summary writer (for logging)
+    tb_summary = None
     if summary_path is not None:
-        writer = torch.utils.tensorboard.SummaryWriter(summary_path)
+        tb_summary = torch.utils.tensorboard.SummaryWriter(summary_path)
 
     step = 0
     for epoch in range(epochs):
@@ -46,46 +47,79 @@ def starting_train(
         for i, batch in enumerate(train_loader):
             print(f"\rIteration {i + 1} of {len(train_loader)} ...", end="")
 
-            # TODO: Backpropagation and gradient descent
+            input_data, label_data = batch
+            pred = model.forward(input_data)
+            loss = loss_fn(pred, label_data)
+            pred = pred.argmax(axis=1)
+
+            loss.backward()
+            optimizer.step()
+            optimizer.zero_grad()
+
+            print(f"Epoch {epoch} | Train Loss: {loss.item()}")
 
             # Periodically evaluate our model + log to Tensorboard
             if step % n_eval == 0:
-                # TODO:
                 # Compute training loss and accuracy.
-                # Log the results to Tensorboard.
+                # Log the results to Tensorboard
 
-                # TODO:
+                train_accuracy = compute_accuracy(predictions, labels)
+
+                if tb_summary:
+                    tb_summary.add_scalar('Loss (Training)', loss, epoch)
+                    tb_summary.add_scalar('Accuracy (Training)', train_accuracy, epoch)
+
+                    print(f"    Training Accuracy: {train_accuracy}")
+
                 # Compute validation loss and accuracy.
                 # Log the results to Tensorboard.
                 # Don't forget to turn off gradient calculations!
-                evaluate(val_loader, model, loss_fn)
+                valid_loss, valid_accuracy = evaluate(val_loader, model, loss_fn)
+
+                if tb_summary:
+                    tb_summary.add_scalar('Loss (Validation)', valid_loss, epoch)
+                    tb_summary.add_scalar('Accuracy (Validation)', valid_accuracy, epoch)
+                model.train()
 
             step += 1
 
         print()
 
 
+"""
+Computes the accuracy of a model's predictions.
+
+Example input:
+    outputs: [0.7, 0.9, 0.3, 0.2]
+    labels:  [1, 1, 0, 1]
+
+Example output:
+    0.75
+"""
+
 def compute_accuracy(outputs, labels):
-    """
-    Computes the accuracy of a model's predictions.
-
-    Example input:
-        outputs: [0.7, 0.9, 0.3, 0.2]
-        labels:  [1, 1, 0, 1]
-
-    Example output:
-        0.75
-    """
 
     n_correct = (torch.round(outputs) == labels).sum().item()
     n_total = len(outputs)
     return n_correct / n_total
 
 
-def evaluate(val_loader, model, loss_fn):
-    """
-    Computes the loss and accuracy of a model on the validation dataset.
+"""
+Computes the loss and accuracy of a model on the validation dataset.
 
-    TODO!
-    """
-    pass
+"""
+
+def evaluate(val_loader, model, loss_fn):
+
+    model.eval()
+
+    loss, correct, count = 0, 0, 0
+    for i, batch in enumerate(val_loader):
+        input_data, label_data = batch
+        pred = model.forward(input_data)
+
+        loss += compute_accuracy(pred, label_data)
+        correct += (pred.argmax(axis=1) == label_data).sum().item()
+        count += len(label_data)
+
+    return loss, correct/count
