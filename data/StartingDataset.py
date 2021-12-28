@@ -1,6 +1,6 @@
 import torch
 import pandas as pd
-
+import PIL.Image as img
 
 class StartingDataset(torch.utils.data.Dataset):
     """
@@ -9,14 +9,15 @@ class StartingDataset(torch.utils.data.Dataset):
 
     def __init__(self, path):
         df = pd.read_csv(path)
-        self.images = df['image_id']
+        self.imgid = df['image_id']
         self.labels = df['label']
+            
 
     def __getitem__(self, index):
-        inputs = torch.zeros([3, 224, 224])
-        label = 0
+        id = self.imgid.iloc(index)
+        lbl = self.labels.iloc(index)
 
-        return inputs, label
+        return img.open('../../train_images/' + str(id) + '.jpg'), self.labels[index]
 
     def __len__(self):
         return len(self.labels)

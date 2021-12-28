@@ -114,7 +114,7 @@ def evaluate(val_loader, model, loss_fn):
     model.eval()
 
     loss, correct, count = 0, 0, 0
-    for i, batch in enumerate(val_loader):
+    for batch in val_loader:
         input_data, label_data = batch
         pred = model.forward(input_data)
 
