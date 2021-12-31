@@ -49,7 +49,7 @@ def starting_train(
 
             input_data, label_data = batch
             pred = model(input_data)
-            loss = loss_fn(pred, label_data)
+            loss = loss_fn(pred, label_data)    # Prediction an label data should be the exact same shape.
             pred = pred.argmax(axis=1)
 
             loss.backward()
@@ -98,8 +98,8 @@ Example output:
 """
 
 def compute_accuracy(outputs, labels):
-
-    n_correct = (torch.round(outputs) == labels).sum().item()
+    # n_correct = torch.round(outputs)
+    n_correct = (outputs == labels).sum().item()
     n_total = len(outputs)
     return n_correct / n_total
 
