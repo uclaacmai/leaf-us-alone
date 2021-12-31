@@ -48,7 +48,7 @@ def starting_train(
             print(f"\rIteration {i + 1} of {len(train_loader)} ...", end="")
 
             input_data, label_data = batch
-            pred = model.forward(input_data)
+            pred = model(input_data)
             loss = loss_fn(pred, label_data)
             pred = pred.argmax(axis=1)
 
@@ -63,7 +63,7 @@ def starting_train(
                 # Compute training loss and accuracy.
                 # Log the results to Tensorboard
 
-                train_accuracy = compute_accuracy(predictions, labels)
+                train_accuracy = compute_accuracy(pred, label_data)
 
                 if tb_summary:
                     tb_summary.add_scalar('Loss (Training)', loss, epoch)

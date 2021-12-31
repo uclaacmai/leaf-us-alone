@@ -32,7 +32,7 @@ def main():
 
     # Initalize dataset and model. Then train the model!
     train_dataset = StartingDataset('../train.csv')
-    val_dataset = StartingDataset('')
+    val_dataset = StartingDataset('../test.csv')
     model = StartingNetwork()
     starting_train(
         train_dataset=train_dataset,
