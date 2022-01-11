@@ -15,13 +15,15 @@ class StartingDataset(torch.utils.data.Dataset):
         self.labels = df['label']
         self.transform = transform
         self.training_set = training_set
-            
+
+        self.dir = "/".join(path.split("/")[:-1])
+
 
     def __getitem__(self, index):
         id = self.imgid.iloc[index]
         lbl = torch.tensor(int(self.labels.iloc[index]))
 
-        directory = '..\\train_images' if self.training_set == True else '..\\test_images'
+        directory = (self.dir + '/train_images') if self.training_set == True else (self.dir + '/test_images')
 
         return (t.ToTensor()(img.open(os.path.join(directory, str(id))).resize((227, 227))), lbl)
 
