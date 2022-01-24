@@ -1,4 +1,5 @@
 import torch
+import constants
 import torch.nn as nn
 import torch.optim as optim
 import torch.utils.tensorboard
@@ -56,10 +57,10 @@ def starting_train(
             optimizer.step()
             optimizer.zero_grad()
 
-            print(f"Epoch {epoch} | Train Loss: {loss.item()}")
+            print(f"\n    Train Loss: {loss.item()}")
 
             # Periodically evaluate our model + log to Tensorboard
-            if step % n_eval == 0:
+            if (step + 1) % n_eval == 0:
                 # Compute training loss and accuracy.
                 # Log the results to Tensorboard
 
@@ -69,7 +70,7 @@ def starting_train(
                     tb_summary.add_scalar('Loss (Training)', loss, epoch)
                     tb_summary.add_scalar('Accuracy (Training)', train_accuracy, epoch)
 
-                    print(f"    Training Accuracy: {train_accuracy}")
+                print(f"    Train Accu: {train_accuracy}")
 
                 # Compute validation loss and accuracy.
                 # Log the results to Tensorboard.
@@ -79,9 +80,18 @@ def starting_train(
                 if tb_summary:
                     tb_summary.add_scalar('Loss (Validation)', valid_loss, epoch)
                     tb_summary.add_scalar('Accuracy (Validation)', valid_accuracy, epoch)
+
+                print(f"    Valid Loss: {valid_loss}")
+                print(f"    Valid Accu: {valid_accuracy}")
+
                 model.train()
 
             step += 1
+
+        print()
+        if (epoch + 1) % constants.SAVE_INTERVAL:
+            print("Saving model...")
+            # Still need to implement this!
 
         print()
 
@@ -98,7 +108,9 @@ Example output:
 """
 
 def compute_accuracy(outputs, labels):
-    # n_correct = torch.round(outputs)
+    #print(outputs)
+    #print(labels)
+    outputs = torch.round(outputs.float())
     n_correct = (outputs == labels).sum().item()
     n_total = len(outputs)
     return n_correct / n_total
@@ -117,8 +129,10 @@ def evaluate(val_loader, model, loss_fn):
     for batch in val_loader:
         input_data, label_data = batch
         pred = model.forward(input_data)
-
-        loss += compute_accuracy(pred, label_data)
+        #print(pred.argmax(axis=1))
+        #print(label_data)
+        #print()
+        loss += loss_fn(pred, label_data).mean().item()
         correct += (pred.argmax(axis=1) == label_data).sum().item()
         count += len(label_data)
 
