@@ -1,41 +1,49 @@
+"""
+Using ResNet-18 on 227 X 227 X 3 images
+Previous AlexNet implementation found below
+
+"""
+
 import torch
 import torch.nn as nn
 
-
 class StartingNetwork(torch.nn.Module):
-    """
-    Using ResNet-18 on 227 X 227 X 3 images
-    Previous AlexNet implementation found below
-    """
 
     def __init__(self):
         super().__init__()
 
+        # Initial Convolutional Layer (227 X 227) --> (55 X 55)
         self.c1 = nn.Conv2d(in_channels=3, out_channels=3, kernel_size=11, stride=4, padding=1, bias=True)
+
+        # Loading in ResNet-18 from PyTorch 
         model = torch.hub.load('pytorch/vision:v0.8.0', 'resnet18', pretrained=True)
         self.resnet = torch.nn.Sequential(*(list(model.children())[:-1]))
 
+        # Used to reduce output of ResNet 
         self.f1 = nn.Linear(512, 512)
         self.f2 = nn.Linear(512, 5)
 
+
     def forward(self, x):
-        x = self.c1(x)
-        nn.ReLU()
-        x = self.resnet(x)
+        x = self.c1(x) # (3 X 227 X 227) --> (3 X 55 X 55)
         nn.ReLU()
 
-        x = torch.flatten(x, 1)
+        x = self.resnet(x) # (3 X 55 X 55) --> (512 X 1 X 1)
+        nn.ReLU()
+
+        x = torch.flatten(x, 1) # (512 X 1 X 1) --> (512)
         x = self.f1(x)
         nn.ReLU()
 
-        nn.Dropout(p=0.5, inplace=True)
-        x = self.f2(x)
+        nn.Dropout(p=0.5, inplace=True) # (512) --> (512)
+
+        x = self.f2(x) # (512) --> (5)
         return x
 
 
 
 """
-Previous implementation: AlexNet
+Previous implementation: AlexNet (accuracy: TBD)
 
     self.c1 = nn.Conv2d(in_channels=3, out_channels=96, kernel_size=11, stride=4, padding=1, bias=True)
     self.m1 = nn.MaxPool2d(kernel_size=3, stride=2)

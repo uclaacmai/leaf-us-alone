@@ -1,41 +1,30 @@
-# leaf-us-alone
+# leaf us alone 🌿
 
-*Kaggle's Cassava Leaf Disease Classification Project using ResNet-18*
+*Kaggle's Cassava Leaf Disease Classification Project using ResNet-18 - UCLA ACM AI, Projects*
 
 This project was conducted as part of UCLA's ACM AI Projects committee, during Winter '22.
-For more references, kindly check out the following resources:
 
-* [Project Skeleton Code (Repo)](https://)
-* [Project Skeleton Notebook (Kaggle)](https://)
-* [Cassava Leaf Disease Challenge (Kaggle)](https://)
+For more references, kindly check out the following resources: 
 
-## Setup
+* [Project Skeleton Code (Repo)](https://github.com/uclaacmai/projects-skeleton-code)
+* [Project Skeleton Notebook (Kaggle)](https://www.kaggle.com/advitdeepak/leaf-us-alone)
+* [Cassava Leaf Disease Challenge (Kaggle)](https://www.kaggle.com/c/cassava-leaf-disease-classification)
 
-1. Create a new conda environment.
+> Quick Statistics: utilized data augmentation (rotate, flip, blur), achieved accuracy of: TBD% 
 
-2. Install PyTorch.
+## Running the Code Locally 
 
-3. As you work on the project, you will end up installing many more packages.
+1. Create and activate a new Conda environment.
 
-## Running the Skeleton Code
+2. Install PyTorch, PIL, Pandas, TorchVision, and TensorBoard.
 
-### Running the Code Locally
+3. Download the Cassava Leaf dataset from [Kaggle Cassava Data](https://www.kaggle.com/c/cassava-leaf-disease-classification/data)
 
-After activating your conda environment, run the following command:
+3. Clone this repository and run `python main.py` 
 
-```
-python main.py
-```
-
-### Running the Code on Google Colab
-
-[This notebook](https://colab.research.google.com/drive/1zkxwgDItHv92iD07M8o8FlfJ0ZxLUDly?usp=sharing) will walk you through setting the skeleton code up on Google Colab.
-
-**Note:** Google Colab may terminate your session after a few hours, so it may be a better idea to run your code on Kaggle (see below).
+4. Modifications can be made by changing `constants.py`
 
 ### Running the Code on Kaggle
-
-**Note:** The instructions in this section may not be completely accurate. If there are any mistakes, please let us know!
 
 1. Navigate to the [code tab of the Kaggle competition](https://www.kaggle.com/c/cassava-leaf-disease-classification/code). Click on the "New Notebook" button to create a new notebook. The dataset should be automatically loaded in the `/kaggle/input` folder.
 
@@ -44,15 +33,15 @@ python main.py
 3. To access your code, run the following command (replacing the URL):
 
    ```
-   !git clone "https://github.com/uclaacmai/projects-skeleton-code"
+   !git clone "https://github.com/uclaacmai/leaf-us-alone"
    ```
 
-   This should clone your repository into the `/kaggle/working` folder.
+   This should clone this repository into the `/kaggle/working` folder.
 
 4. Change directories into your repository by running the command:
 
    ```
-   cd <name of your repository>
+   cd leaf-us-alone
    ```
 
 5. You should now be able to import your code normally. For instance, the following code will import the starting code:
@@ -66,35 +55,7 @@ python main.py
 
 6. If you want your code to run without keeping the tab open, you can click on "Save version" and commit your code. Make sure to save any outputs (e.g. log files) to the `/kaggle/output`, and you should be able to access them in the future.
 
-## Downloading the Dataset From Kaggle
 
-### Method 1: Downloading from kaggle.com
+## Further Resources 
 
-1. Go to [kaggle.com](kaggle.com) and create an account.
-
-2. Join either the [Cassava leaf](https://www.kaggle.com/c/cassava-leaf-disease-classification) or [Humpback whale](https://www.kaggle.com/c/humpback-whale-identification) competition.
-
-3. In the data tab, you should be able to download the data as a zip file.
-
-### Method 2: Downloading from the Kaggle API
-
-1. Install the Kaggle API:
-
-   ```
-   pip install kaggle
-   ```
-
-   If you're on Mac or Linux, you may have to run:
-
-   ```
-   pip install --user kaggle
-   ```
-
-2. Copy the `kaggle.json` file to the location `~/.kaggle/kaggle.json` (or `C:\Users\<Windows-username>\.kaggle\kaggle.json` if you are on Windows).
-
-3. Download the zipped dataset.
-
-   ```
-   # Use humpback-whale-identification for 🐋 dataset
-   kaggle competitions download -c cassava-leaf-disease-classification
-   ```
+To learn more about ACM AI, feel free to check out our [LinkTree](https://linktr.ee/acm_ai_ucla)! 

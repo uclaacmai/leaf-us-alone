@@ -1,8 +1,21 @@
+"""
+Main function used to train the Cassava Leaf Disease Detection model. 
+Utilizes file constants.py as well as the following hyperparameters: 
+
+- Epochs - how many times should the model pass through the dataset? 
+- Batch size - how many images to use in one training iteration? 
+- n_eval - how often should we evaluate the model (in iterations)? 
+- logdir - where should we output our tensorboard files to? 
+- datadir - where is the cassava leaf disease dataset (6 GB)? 
+- summaries - where should we output our training summaries to? 
+
+"""
+
 import argparse
 import os, torch
 import constants
 
-from data.StartingDataset import StartingDataset
+from data.StartingDataset import StartingDataset 
 from networks.StartingNetwork import StartingNetwork
 from train_functions.starting_train import starting_train
 
@@ -40,6 +53,7 @@ def main():
     train_dataset = StartingDataset(csv_path)
     val_dataset = StartingDataset(csv_path, training_set = False)
 
+    # Create our model, and begin starting_train()
     model = StartingNetwork()
     starting_train(
         train_dataset=train_dataset,
@@ -50,6 +64,19 @@ def main():
         summary_path=summary_path,
     )
 
+
+"""
+Add parser arguments using argparse 
+Default values taken from constants.py 
+
+- Epochs - how many times should the model pass through the dataset? 
+- Batch size - how many images to use in one training iteration? 
+- n_eval - how often should we evaluate the model (in iterations)? 
+- logdir - where should we output our tensorboard files to? 
+- datadir - where is the cassava leaf disease dataset (6 GB)? 
+- summaries - where should we output our training summaries to? 
+
+"""
 
 def parse_arguments():
     parser = argparse.ArgumentParser()
