@@ -71,6 +71,9 @@ def starting_train(
             print(f"\rIteration {i + 1} of {len(train_loader)} ...", end="")
 
             input_data, label_data = batch
+            input_data = input_data.to(device)
+            label_data = label_data.to(device)
+            
             pred = model(input_data)
 
             # Prediction, label data have same shape
