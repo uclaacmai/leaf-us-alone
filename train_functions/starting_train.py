@@ -1,4 +1,5 @@
 import torch
+import constants
 import torch.nn as nn
 import torch.optim as optim
 import torch.utils.tensorboard
@@ -15,6 +16,9 @@ Args:
     summary_path:    Path where Tensorboard summaries are located.
 """
 
+global device
+device = None 
+
 def starting_train(
     train_dataset, val_dataset, model, hyperparameters, n_eval, summary_path
 ):
@@ -29,6 +33,13 @@ def starting_train(
     val_loader = torch.utils.data.DataLoader(
         val_dataset, batch_size=batch_size, shuffle=True
     )
+
+    if torch.cuda.is_available():
+        device = torch.device('cuda')
+    else:
+        device = torch.device('cpu')
+
+    model.to(device)
 
     # Initalize optimizer (for gradient descent) and loss function
     optimizer = optim.Adam(model.parameters())
@@ -48,28 +59,28 @@ def starting_train(
             print(f"\rIteration {i + 1} of {len(train_loader)} ...", end="")
 
             input_data, label_data = batch
-            pred = model.forward(input_data)
-            loss = loss_fn(pred, label_data)
+            pred = model(input_data)
+            loss = loss_fn(pred, label_data)    # Prediction an label data should be the exact same shape.
             pred = pred.argmax(axis=1)
 
             loss.backward()
             optimizer.step()
             optimizer.zero_grad()
 
-            print(f"Epoch {epoch} | Train Loss: {loss.item()}")
+            print(f"\n    Train Loss: {loss.item()}")
 
             # Periodically evaluate our model + log to Tensorboard
-            if step % n_eval == 0:
+            if (step + 1) % n_eval == 0:
                 # Compute training loss and accuracy.
                 # Log the results to Tensorboard
 
-                train_accuracy = compute_accuracy(predictions, labels)
+                train_accuracy = compute_accuracy(pred, label_data)
 
                 if tb_summary:
                     tb_summary.add_scalar('Loss (Training)', loss, epoch)
                     tb_summary.add_scalar('Accuracy (Training)', train_accuracy, epoch)
 
-                    print(f"    Training Accuracy: {train_accuracy}")
+                print(f"    Train Accu: {train_accuracy}")
 
                 # Compute validation loss and accuracy.
                 # Log the results to Tensorboard.
@@ -79,9 +90,18 @@ def starting_train(
                 if tb_summary:
                     tb_summary.add_scalar('Loss (Validation)', valid_loss, epoch)
                     tb_summary.add_scalar('Accuracy (Validation)', valid_accuracy, epoch)
+
+                print(f"    Valid Loss: {valid_loss}")
+                print(f"    Valid Accu: {valid_accuracy}")
+
                 model.train()
 
             step += 1
+
+        print()
+        if (epoch + 1) % constants.SAVE_INTERVAL:
+            print("Saving model...")
+            # Still need to implement this!
 
         print()
 
@@ -98,8 +118,10 @@ Example output:
 """
 
 def compute_accuracy(outputs, labels):
-
-    n_correct = (torch.round(outputs) == labels).sum().item()
+    #print(outputs)
+    #print(labels)
+    outputs = torch.round(outputs.float())
+    n_correct = (outputs == labels).sum().item()
     n_total = len(outputs)
     return n_correct / n_total
 
@@ -116,10 +138,12 @@ def evaluate(val_loader, model, loss_fn):
     loss, correct, count = 0, 0, 0
     for batch in val_loader:
         input_data, label_data = batch
-        pred = model.forward(input_data)
+        input_data = input_data.to(device)
+        label_data = label_data.to(device)
 
-        loss += compute_accuracy(pred, label_data)
-        correct += (pred.argmax(axis=1) == label_data).sum().item()
+        pred = model(input_data)
+        loss += loss_fn(pred, label_data).mean().item()
+        correct += (torch.argmax(pred, dim=1) == label_data).sum().item()
         count += len(label_data)
 
     return loss, correct/count
