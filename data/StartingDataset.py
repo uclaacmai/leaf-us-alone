@@ -12,7 +12,7 @@ TYPES = constants.IMG_TYPES # The number of different types of disease classific
 VALUES = constants.VALUES # The counts of how many images that we start off with (dict)
 
 
-class Dataset(torch.utils.data.Dataset):
+class StartingDataset(torch.utils.data.Dataset):
 
     def __init__(self, path, training_set = True):
 
