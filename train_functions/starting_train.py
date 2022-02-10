@@ -16,6 +16,9 @@ Args:
     summary_path:    Path where Tensorboard summaries are located.
 """
 
+global device
+device = None 
+
 def starting_train(
     train_dataset, val_dataset, model, hyperparameters, n_eval, summary_path
 ):
@@ -30,6 +33,13 @@ def starting_train(
     val_loader = torch.utils.data.DataLoader(
         val_dataset, batch_size=batch_size, shuffle=True
     )
+
+    if torch.cuda.is_available():
+        device = torch.device('cuda')
+    else:
+        device = torch.device('cpu')
+
+    model.to(device)
 
     # Initalize optimizer (for gradient descent) and loss function
     optimizer = optim.Adam(model.parameters())
@@ -128,12 +138,12 @@ def evaluate(val_loader, model, loss_fn):
     loss, correct, count = 0, 0, 0
     for batch in val_loader:
         input_data, label_data = batch
-        pred = model.forward(input_data)
-        #print(pred.argmax(axis=1))
-        #print(label_data)
-        #print()
+        input_data = input_data.to(device)
+        label_data = label_data.to(device)
+
+        pred = model(input_data)
         loss += loss_fn(pred, label_data).mean().item()
-        correct += (pred.argmax(axis=1) == label_data).sum().item()
+        correct += (torch.argmax(pred, dim=1) == label_data).sum().item()
         count += len(label_data)
 
     return loss, correct/count

@@ -1,6 +1,13 @@
 # leaf-us-alone
 
-*Below README is taken from projects-skeleton-code.*
+*Kaggle's Cassava Leaf Disease Classification Project using ResNet-18*
+
+This project was conducted as part of UCLA's ACM AI Projects committee, during Winter '22.
+For more references, kindly check out the following resources:
+
+* [Project Skeleton Code (Repo)](https://)
+* [Project Skeleton Notebook (Kaggle)](https://)
+* [Cassava Leaf Disease Challenge (Kaggle)](https://)
 
 ## Setup
 

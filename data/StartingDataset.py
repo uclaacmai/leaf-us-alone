@@ -24,7 +24,6 @@ class StartingDataset(torch.utils.data.Dataset):
         self.training_set = training_set
         self.dir = "/".join(path.split("/")[:-1])
 
-
         temp = []
         curr = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0}
 
@@ -55,24 +54,19 @@ class StartingDataset(torch.utils.data.Dataset):
 
         temp = pd.DataFrame(data=temp)
 
+        temp = temp.sample(frac=1).reset_index(drop=True)
         self.imgid = temp[0]; self.labels = temp[1]
-
-        self.imgid = self.imgid.sample(frac=1).reset_index(drop=True)
-        self.labels = self.labels.sample(frac=1).reset_index(drop=True)
 
         # Next, specify which of the images are train and which are test
         if training_set:
             self.imgid = self.imgid[:TRAIN_NUM * TYPES]
             self.labels = self.labels[:TRAIN_NUM * TYPES]
+            pd.concat([self.imgid, self.labels], axis=1).to_csv('splittrain.csv')
         else:
             self.imgid = self.imgid[TRAIN_NUM * TYPES:]
             self.labels = self.labels[TRAIN_NUM * TYPES:]
+            pd.concat([self.imgid, self.labels], axis=1).to_csv('splitvalid.csv')
 
-
-        # Now, print some metrics just to make sure we have everything
-
-        #mode = "training" if training_set else "testing"
-        #print(f"Loaded up {len(self.imgid)} images for {mode}.")
 
 
 

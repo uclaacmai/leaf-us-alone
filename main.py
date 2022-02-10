@@ -18,8 +18,10 @@ def main():
         summary_path = f"{args.summaries}/{args.logdir}"
         os.makedirs(summary_path, exist_ok=True)
 
+    # Use GPU, if available
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+    # Print out training information 
     print("\n----------------- Summary Information --------------------")
     print(f"\nSummary path: {summary_path}")
     print(f"   Data path: {constants.DATA_DIR}\n")
