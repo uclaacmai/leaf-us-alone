@@ -150,6 +150,7 @@ def evaluate(val_loader, model, loss_fn):
 
     model.eval()
     model.to(device)
+    (model.resnet).to(device)
 
     loss, correct, count = 0, 0, 0
     with torch.no_grad(): 
