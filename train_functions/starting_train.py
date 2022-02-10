@@ -50,6 +50,7 @@ def starting_train(
         device = torch.device('cpu')
 
     model.to(device)
+    (model.resnet).to(device)
 
     # Initalize optimizer (for gradient descent) and loss function
     optimizer = optim.Adam(model.parameters())
