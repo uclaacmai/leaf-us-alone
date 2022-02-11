@@ -149,8 +149,8 @@ Computes the loss and accuracy of a model on the validation dataset.
 def evaluate(val_loader, model, loss_fn):
 
     model.eval()
-    model.to(device)
-    (model.resnet).to(device)
+    model = model.to(device)
+    model.resnet = (model.resnet).to(device)
 
     loss, correct, count = 0, 0, 0
     with torch.no_grad(): 
