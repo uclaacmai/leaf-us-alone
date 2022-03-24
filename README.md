@@ -10,7 +10,7 @@ For more references, kindly check out the following resources:
 * [Project Skeleton Notebook (Kaggle)](https://www.kaggle.com/advitdeepak/leaf-us-alone)
 * [Cassava Leaf Disease Challenge (Kaggle)](https://www.kaggle.com/c/cassava-leaf-disease-classification)
 
-> Quick Statistics: utilized data augmentation (rotate, flip, blur), achieved accuracy of: TBD% 
+> Quick Statistics: utilized data augmentation (rotate, flip, blur), achieved accuracy of: 95% 
 
 ## Running the Code Locally 
 
